@@ -7,7 +7,7 @@ pub(crate) fn mean(vec: &Vec<f64>) -> f64{
     }
 }
 
-pub(crate) fn argmax<T: Clone + std::cmp::PartialOrd>(vec: &Vec<T>) -> i32 {
+pub(crate) fn argmax<T: Clone + PartialOrd>(vec: &Vec<T>) -> i32 {
     if vec.is_empty(){
         -1
     }else{

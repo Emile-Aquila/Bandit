@@ -1,4 +1,5 @@
 use crate::algorithms::epsilon_greedy::epsilon_greedy_policy;
+use crate::algorithms::ucb::ucb_policy;
 use crate::algorithms::utils::{build_reward_history, RewardHistory};
 use crate::bandit::BanditMachine;
 mod bandit;
@@ -17,8 +18,9 @@ fn main(){
 
     let mut rew_history: RewardHistory = build_reward_history(4);
     let mut rew_sum: f64 = 0.0;
-    for _ in 0..100 {
-        let selected_arm: u32 = epsilon_greedy_policy(&rew_history, 0.1_f64);
+    for t in 0..100 {
+        // let selected_arm: u32 = epsilon_greedy_policy(&rew_history, 0.1_f64);
+        let selected_arm: u32 = ucb_policy(&rew_history, t);
         let rew = machine.get_reward(selected_arm);
         println!("selected arm is {}, rew is {}", selected_arm, rew);
         rew_history.observe(selected_arm, rew);
