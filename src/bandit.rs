@@ -1,6 +1,4 @@
-use rand_distr::{Normal, Distribution};
-use rand::thread_rng;
-use std::any::{Any};
+use rand_distr::Distribution;
 
 pub trait BanditMachine{
     fn get_reward(&self, arm_index: u32) -> f64;
