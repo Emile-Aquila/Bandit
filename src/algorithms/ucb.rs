@@ -7,7 +7,7 @@ pub fn ucb_policy(rew_history: &RewardHistory, t: u32) -> u32{
             0 => 1.0_f64,
             _ => rewards.len() as f64,
         };
-        let ucb_score = mean(rewards) + ((t as f64).ln()/ 2.0 / len).sqrt();
+        let ucb_score = mean(rewards) + ((t as f64).ln() / len * 2.0_f64).sqrt();
         scores.push(ucb_score);
     }
     argmax(&scores) as u32
