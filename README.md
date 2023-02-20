@@ -6,7 +6,7 @@ implementations of algorithms for bandit problem
 # Algorithms
 
 ## Probabilistic bandit problem
-各アームが平均 $\mu$ について定まる分布 $\pi(\mu)$ に従って報酬を与える問題。
+各アームが平均 $\mu$ について定まる分布 $\pi(\mu)$ に従って報酬が与えられるbandit問題。
 
 <br>
 
