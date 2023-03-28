@@ -1,13 +1,14 @@
 use crate::algorithms::epsilon_greedy::epsilon_greedy_policy;
 use crate::algorithms::thompson_sampling::ts_policy;
 use crate::algorithms::ucb::ucb_policy;
+use crate::algorithms::successive_elimination_policy::successive_elimination_policy;
 use crate::algorithms::utils::{build_reward_history, plot_data, RewardHistory};
 use crate::bandit::BanditMachine;
 mod bandit;
 mod algorithms;
 
 
-fn main(){
+fn prob_bandit(){
     // params
     let T: u32 = 100;
     let rew_sigma: f64 = 0.5;
@@ -36,6 +37,34 @@ fn main(){
         rew_sum += rew;
     }
     println!("total rew is {}, miss prob is {}", rew_sum, miss_probs.last().unwrap());
-    let x_data = &(0..T).map(|x| x as f64).collect::<Vec<f64>>();
+    // let x_data = &(0..T).map(|x| x as f64).collect::<Vec<f64>>();
     // plot_data(&x_data, &miss_probs, "test.png", "miss probs");
+}
+
+fn beta(n: f64, delta: f64) -> f64{  // for best arm identification
+    (4.0 * 4.0 * n / delta).ln()  // log(4*K*n / delta)
+}
+
+fn best_arm_identification(){
+    // params
+    let rew_sigma: f64 = 0.5;
+    let eps: f64 = 0.01;
+    let delta: f64 = 0.005;
+
+    // codes
+    let mus: Vec<f64> = vec![0.5, 1.0, 2.0, 3.0];
+    let machine = bandit::ProbabilisticBanditMachine{
+        mus,
+        arm: Box::new(bandit::build_gaussian_reward(rew_sigma)),
+    };
+    let mut rew_history: RewardHistory = build_reward_history(4);
+    let (optimal_arm, trial_times) = successive_elimination_policy(
+        &machine, &mut rew_history, eps, delta, beta
+    );
+    println!("optimal arm is {}, trial times is {}", optimal_arm, trial_times);
+}
+
+fn main(){
+    // prob_bandit();
+    best_arm_identification();
 }

@@ -47,11 +47,14 @@ pub fn min<T:Clone + PartialOrd>(vec: &Vec<T>) -> T{
 pub struct RewardHistory {
     pub arm_size: u32,
     pub rewards: Vec<Vec<f64>>,
+    pub means: Vec<f64>,
 }
 
 impl RewardHistory{
     pub fn observe(&mut self, arm_id: u32, reward: f64){
         self.rewards[arm_id as usize].push(reward);
+        let size: f64 = self.rewards[arm_id as usize].len() as f64;
+        self.means[arm_id as usize] = (self.means[arm_id as usize] * (size-1.0) + reward) / size;
     }
 }
 
@@ -59,6 +62,7 @@ pub fn build_reward_history(arm_size: u32) -> RewardHistory{
     RewardHistory{
         arm_size,
         rewards: vec![vec![0.0_f64; 0]; arm_size as usize],
+        means: vec![0.0_f64; arm_size as usize],
     }
 }
 
