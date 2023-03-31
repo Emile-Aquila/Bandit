@@ -67,7 +67,13 @@ fn best_arm_identification(){
         &machine, &mut rew_history_lucb, eps, delta, beta
     );
     println!("optimal arm is {}, trial times is {}", optimal_arm, trial_times);
+    for (id, rew_vec) in rew_history.rewards.iter().enumerate(){
+        println!("arm{}: trial times {}", id, rew_vec.len());
+    }
     println!("LUCB: optimal arm is {}, trial times is {}", optimal_arm_lucb, trial_times_lucb);
+    for (id, rew_vec) in rew_history_lucb.rewards.iter().enumerate(){
+        println!("arm{}: trial times {}", id, rew_vec.len());
+    }
     let mut h_eps = 1.0 / (mus[3] - mus[2] as f64 + eps);
     for &mu in mus[0..3].iter(){
         h_eps += 1.0 / (mus[3] - mu as f64 + eps);
