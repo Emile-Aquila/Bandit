@@ -41,4 +41,4 @@ UCB方策における尤度を事後分布に置き換えた物。
 ### ・LUCB方策
 上と同様にUCB/LCBスコアを用いる。
 
-各ステップでの最適腕 $\hat{i}^*_t$ と $\hat{i}^{**}_t := \argmax_{i \neq \hat{i}^*_t} \bar{\mu}_i(t)$ の2つを引いていく方策。
+各ステップでの最適腕 $\hat{i}^\ast_{t}$ と $\hat{i}^\circ_t=argmax_{i \neq \hat{i}^\ast_{t}}\bar{\mu}_i(t)$ の2つを引いていく方策。
