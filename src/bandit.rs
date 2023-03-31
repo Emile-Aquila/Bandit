@@ -1,8 +1,8 @@
 use rand_distr::Distribution;
 
 pub trait BanditMachine{
-    fn get_reward(&self, arm_index: u32) -> f64;
-    // indexに対応するアームを引く
+    fn get_reward(&self, arm_index: u32) -> f64;  // indexに対応するアームを引く
+    fn arm_size(&self) -> u32;  // armの数を返す
 }
 
 pub trait ProbabilisticBanditArm {
@@ -18,6 +18,10 @@ pub struct ProbabilisticBanditMachine {
 impl BanditMachine for ProbabilisticBanditMachine{
     fn get_reward(&self, arm_index: u32) -> f64 {
         self.arm.get_reward(self.mus[arm_index as usize])
+    }
+
+    fn arm_size(&self) -> u32 {
+        self.mus.len() as u32
     }
 }
 

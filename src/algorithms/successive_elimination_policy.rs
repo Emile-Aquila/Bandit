@@ -8,6 +8,7 @@ pub fn successive_elimination_policy(bandit: &ProbabilisticBanditMachine, rew_hi
                                      delta: f64, beta: fn(f64, f64)->f64) -> (i32, u64){
     let mut candidate_set: Vec<u32> = (0..bandit.mus.len() as u32).collect::<Vec<_>>();
     let mut trial_times: u64 = 0;
+    let mut n: f64 = 1.0;
     while !candidate_set.is_empty() {
         for arm_id in &candidate_set {
             rew_history.observe(arm_id.clone(), bandit.get_reward(arm_id.clone()));
@@ -34,6 +35,7 @@ pub fn successive_elimination_policy(bandit: &ProbabilisticBanditMachine, rew_hi
         candidate_set = candidate_set.iter().cloned().filter(
             |&arm_id| lcb_scores[optimal_arm] <= ucb_scores[arm_id as usize]
         ).collect::<Vec<_>>();
+        n += 1.0;
     }
     (-1 as i32, trial_times)
 }

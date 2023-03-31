@@ -2,6 +2,7 @@ use crate::algorithms::epsilon_greedy::epsilon_greedy_policy;
 use crate::algorithms::thompson_sampling::ts_policy;
 use crate::algorithms::ucb::ucb_policy;
 use crate::algorithms::successive_elimination_policy::successive_elimination_policy;
+use crate::algorithms::lucb::lucb_policy;
 use crate::algorithms::utils::{build_reward_history, plot_data, RewardHistory};
 use crate::bandit::BanditMachine;
 mod bandit;
@@ -42,26 +43,37 @@ fn prob_bandit(){
 }
 
 fn beta(n: f64, delta: f64) -> f64{  // for best arm identification
-    (4.0 * 4.0 * n / delta).ln()  // log(4*K*n / delta)
+    (4.0 * 4.0 * n * n / delta).ln()  // log(4*K*n^2 / delta)
 }
 
 fn best_arm_identification(){
     // params
     let rew_sigma: f64 = 0.5;
-    let eps: f64 = 0.01;
-    let delta: f64 = 0.005;
+    let eps: f64 = 0.1;
+    let delta: f64 = 0.001;
 
     // codes
-    let mus: Vec<f64> = vec![0.5, 1.0, 2.0, 3.0];
+    let mus: Vec<f64> = vec![0.5, 1.0, 2.9, 3.0];
     let machine = bandit::ProbabilisticBanditMachine{
-        mus,
+        mus: mus.clone(),
         arm: Box::new(bandit::build_gaussian_reward(rew_sigma)),
     };
     let mut rew_history: RewardHistory = build_reward_history(4);
     let (optimal_arm, trial_times) = successive_elimination_policy(
         &machine, &mut rew_history, eps, delta, beta
     );
+    let mut rew_history_lucb: RewardHistory = build_reward_history(4);
+    let (optimal_arm_lucb, trial_times_lucb) = lucb_policy(
+        &machine, &mut rew_history_lucb, eps, delta, beta
+    );
     println!("optimal arm is {}, trial times is {}", optimal_arm, trial_times);
+    println!("LUCB: optimal arm is {}, trial times is {}", optimal_arm_lucb, trial_times_lucb);
+    let mut h_eps = 1.0 / (mus[3] - mus[2] as f64 + eps);
+    for &mu in mus[0..3].iter(){
+        h_eps += 1.0 / (mus[3] - mu as f64 + eps);
+    }
+    h_eps /= 2.0;
+    println!("sample complexity is {}, {}", h_eps, h_eps * 256.0 * (4.0 * 4.0 /delta).ln());
 }
 
 fn main(){
