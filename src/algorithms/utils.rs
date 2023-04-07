@@ -1,4 +1,7 @@
+use std::iter::Sum;
 use plotters::prelude::*;
+use std::ops::Add;
+
 
 pub(crate) fn mean(vec: &Vec<f64>) -> f64{
     match vec.iter().len() {
@@ -43,6 +46,17 @@ pub fn min<T:Clone + PartialOrd>(vec: &Vec<T>) -> T{
     }
     min_value
 }
+
+pub fn normalize(vec: &Vec<f64>) -> Vec<f64>{
+    let sum: f64 = vec.clone().iter().sum::<f64>() as f64;
+    vec.iter().map(|&x| x as f64/ sum).collect::<Vec<f64>>()
+}
+
+pub fn softmax(vec: &Vec<f64>) -> Vec<f64> {
+    let mut tmp_vec: Vec<f64> = vec.clone().iter().map(|&x| x.exp()).collect::<Vec<f64>>();
+    normalize(&tmp_vec)
+}
+
 
 pub struct RewardHistory {
     pub arm_size: u32,

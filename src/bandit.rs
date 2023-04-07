@@ -1,4 +1,5 @@
 use rand_distr::Distribution;
+use crate::algorithms::utils::{normalize, softmax};
 
 pub trait BanditMachine{
     fn get_reward(&self, arm_index: u32) -> f64;  // indexに対応するアームを引く
@@ -41,3 +42,36 @@ pub fn build_gaussian_reward(sigma: f64) -> GaussianReward{
     }
 }
 
+
+pub struct AdversarialBanditMachine {
+    arm_weights: Vec<f64>,  //
+    gamma: f64,  // 減衰係数
+
+}
+
+pub fn build_adversarial_bandit_machine(arm_size: usize, gamma: f64) -> AdversarialBanditMachine {
+    AdversarialBanditMachine{
+        arm_weights: vec![0.0; arm_size],
+        gamma
+    }
+}
+
+impl BanditMachine for AdversarialBanditMachine {
+    fn get_reward(&self, arm_index: u32) -> f64 {
+        softmax(&(self.arm_weights.clone().iter().map(|&x| -x).collect::<Vec<_>>()))[arm_index as usize]
+    }
+
+    fn arm_size(&self) -> u32 {
+        self.arm_weights.len() as u32
+    }
+}
+
+impl AdversarialBanditMachine{
+    fn observe(&mut self, selected_arm: u32){
+        self.arm_weights = self.arm_weights.iter().map(
+            |&w| self.gamma * w
+        ).collect::<Vec<_>>();
+        self.arm_weights[selected_arm as usize] += 1.0;
+        self.arm_weights = normalize(&self.arm_weights);
+    }
+}
