@@ -27,6 +27,22 @@ pub(crate) fn argmax<T: Clone + PartialOrd>(vec: &Vec<T>) -> i32 {
     }
 }
 
+pub(crate) fn argmin<T: Clone + PartialOrd>(vec: &Vec<T>) -> i32 {
+    if vec.is_empty(){
+        -1
+    }else{
+        let mut min_id = 0;
+        let mut min_value = vec[0].clone();
+        for (i, val) in vec.iter().enumerate(){
+            if *val < min_value{
+                min_id = i;
+                min_value = val.clone();
+            }
+        }
+        return min_id as i32;
+    }
+}
+
 pub fn max<T:Clone + PartialOrd>(vec: &Vec<T>) -> T{
     let mut max_value: T = vec[0].clone();
     for tmp in vec {
