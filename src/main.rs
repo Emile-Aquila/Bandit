@@ -86,8 +86,8 @@ fn best_arm_identification(){
 
 fn adversarial_bandit_problem(){
     let T: u32 = 200;
-    let eta = 0.5;
-    let agent_gamma = 0.2;
+    let eta = 0.1;
+    let agent_gamma = 0.9;
     let bandit_gamma = 0.5;
 
     let mut bandit = build_adversarial_bandit_machine(4, bandit_gamma);
