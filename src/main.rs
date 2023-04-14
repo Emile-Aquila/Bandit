@@ -5,7 +5,8 @@ use crate::algorithms::DMED;
 use crate::algorithms::ucb::ucb_policy;
 use crate::algorithms::successive_elimination_policy::successive_elimination_policy;
 use crate::algorithms::lucb::lucb_policy;
-use crate::algorithms::utils::{build_reward_history, plot_data, RewardHistory, d_gaussian, d_bernoulli};
+use crate::algorithms::regrets::expected_regret;
+use crate::algorithms::utils::{build_reward_history, plot_data, RewardHistory, d_gaussian, d_bernoulli, max};
 use crate::bandit::{AdversarialBanditMachine, BanditMachine, build_adversarial_bandit_machine};
 mod bandit;
 mod algorithms;
@@ -18,6 +19,7 @@ fn prob_bandit(){
 
     // codes
     let mus: Vec<f64> = vec![0.5, 1.0, 2.0, 3.0];
+    let optimal_mu: f64 = max(&mus);
     let machine = bandit::ProbabilisticBanditMachine{
         mus,
         arm: Box::new(bandit::build_gaussian_reward(rew_sigma)),
@@ -41,11 +43,12 @@ fn prob_bandit(){
         rew_history.observe(selected_arm, rew);
         let miss_prob = ((t+1-(rew_history.rewards[3].len() as u32)) as f64)/ ((t+1) as f64);
 
-        println!("selected arm is {}, rew is {}, miss_probs {}", selected_arm, rew, miss_prob);
+        println!("selected arm is {}, rew is {:.5}, miss_probs {:.5}", selected_arm, rew, miss_prob);
         miss_probs.push(miss_prob);
         rew_sum += rew;
     }
-    println!("total rew is {}, miss prob is {}", rew_sum, miss_probs.last().unwrap());
+    println!("total rew is {:.5}, miss prob is {:.5}", rew_sum, miss_probs.last().unwrap());
+    println!("Expected Regret is {:.5}", expected_regret(&rew_history, optimal_mu));
     // let x_data = &(0..T).map(|x| x as f64).collect::<Vec<f64>>();
     // plot_data(&x_data, &miss_probs, "test.png", "miss probs");
 }

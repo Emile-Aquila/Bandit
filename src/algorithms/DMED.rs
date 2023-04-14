@@ -30,6 +30,6 @@ pub fn build_DMEDAgent(arm_size: u32, d_model: Box<dyn Fn(f64, f64) -> f64>) -> 
     DMEDAgent{
         arm_size,
         target_arms: (0..arm_size).collect::<Vec<u32>>(),
-        d_model: Box::new(d_model)
+        d_model
     }
 }

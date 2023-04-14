@@ -1,4 +1,5 @@
 pub mod utils;
+pub mod regrets;
 pub mod epsilon_greedy;
 pub mod ucb;
 pub mod thompson_sampling;
@@ -6,4 +7,3 @@ pub mod successive_elimination_policy;
 pub mod lucb;
 pub mod exp3;
 pub mod DMED;
-pub mod regrets;
