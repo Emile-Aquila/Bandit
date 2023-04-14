@@ -66,9 +66,7 @@ impl AdversarialBanditMachine{
     }
 
     pub fn observe(&mut self, selected_arm: u32){
-        self.arm_weights = self.arm_weights.iter().map(
-            |&w| self.gamma * w
-        ).collect::<Vec<_>>();
+        self.arm_weights = self.arm_weights.iter().map(|&w| self.gamma * w).collect::<Vec<_>>();
         self.arm_weights[selected_arm as usize] += 1.0;
         self.arm_weights = normalize(&self.arm_weights);
     }

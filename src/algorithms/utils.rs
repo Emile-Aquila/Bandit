@@ -97,6 +97,15 @@ pub fn build_reward_history(arm_size: u32) -> RewardHistory{
 }
 
 
+pub fn d_bernoulli(mu1: f64, mu2: f64) -> f64 {  // KL Divergence of Bernoulli distribution
+    mu1 * (mu1 / mu2).ln() + (1.0-mu1) * ((1.0 - mu1)/(1.0 - mu2)).ln()
+}
+
+pub fn d_gaussian(mu1: f64, sigma1: f64, mu2: f64, sigma2: f64) -> f64 { // KL Divergence of Gaussian distribution
+    (sigma2/sigma1).ln() + (sigma1.powf(2.0) + (mu1 - mu2).powf(2.0))/(2.0 * sigma2.powf(2.0)) - 0.5
+}
+
+
 pub fn plot_data(x_data: &Vec<f64>, y_data: &Vec<f64>, file_name: &str, caption: &str){
     // 参考 : https://qiita.com/kanna/items/ea5b15f1b4ce0fee2ab3
 
@@ -138,3 +147,4 @@ pub fn plot_data(x_data: &Vec<f64>, y_data: &Vec<f64>, file_name: &str, caption:
         .draw().unwrap();
     root.present().unwrap();
 }
+
