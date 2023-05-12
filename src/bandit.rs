@@ -1,6 +1,7 @@
 use rand_distr::Distribution;
-use crate::algorithms::utils::{argmax, argmin, normalize, softmax};
+use crate::algorithms::utils::{argmax, argmin, max, min, normalize, softmax};
 
+// 確率的バンディット
 pub trait BanditMachine{
     fn get_reward(&self, arm_index: u32) -> f64;  // indexに対応するアームを引く
     fn arm_size(&self) -> u32;  // armの数を返す
@@ -26,10 +27,10 @@ impl BanditMachine for ProbabilisticBanditMachine{
     }
 }
 
+// Gaussモデル
 pub struct GaussianReward{
     dist_normal: rand_distr::Normal<f64>,
 }
-
 impl ProbabilisticBanditArm for GaussianReward{
     fn get_reward(&self, mu: f64) -> f64 {
         self.dist_normal.sample(&mut rand::thread_rng()) + mu
@@ -42,7 +43,21 @@ pub fn build_gaussian_reward(sigma: f64) -> GaussianReward{
     }
 }
 
+// Bernoulliモデル
+pub struct BernoulliReward{}
+impl ProbabilisticBanditArm for BernoulliReward{
+    fn get_reward(&self, mu: f64) -> f64 {
+        let dist = rand_distr::Bernoulli::new(mu).unwrap();
+        dist.sample(&mut rand::thread_rng()) as i8 as f64
+    }
+}
 
+pub fn build_bernoulli_reward() -> BernoulliReward{
+    BernoulliReward {}
+}
+
+
+// 敵対的バンディット
 pub struct AdversarialBanditMachine {
     arm_weights: Vec<f64>,  //
     gamma: f64,  // 減衰係数
