@@ -1,5 +1,5 @@
 use crate::algorithms::epsilon_greedy::epsilon_greedy_policy;
-use crate::algorithms::exp3::build_exp3agent;
+use crate::algorithms::exp3::{build_exp3agent, build_exp3p_agent};
 use crate::algorithms::thompson_sampling::ts_policy;
 use crate::algorithms::DMED;
 use crate::algorithms::ucb::ucb_policy;
@@ -97,21 +97,22 @@ fn best_arm_identification(){
 fn adversarial_bandit_problem(){
     let T: u32 = 200;
     let eta = 0.2;
+    let beta = 0.5;
     let agent_gamma = 0.9;
     let bandit_gamma = 0.4;
 
     let mut bandit = build_adversarial_bandit_machine(4, bandit_gamma);
-    let mut exp3_agent = build_exp3agent(bandit.arm_size(), agent_gamma, eta);
+    let mut exp3p_agent = build_exp3p_agent(bandit.arm_size(), beta, agent_gamma, eta);
 
     let mut miss_prob: f64 = 0.0;
     let mut rew_sum: f64 = 0.0;
     for t in 1..T+1 {
-        let select_arm: u32 = exp3_agent.select_arm();
+        let select_arm: u32 = exp3p_agent.select_arm();
         let reward: f64 = bandit.get_reward(select_arm);
         miss_prob = (miss_prob * (t-1) as f64 + (select_arm != bandit.best_arm()) as i32 as f64) / t as f64;
         rew_sum += reward;
         println!("reward {:.5}, miss prob {:.5}, rew vec {:?}", reward, miss_prob, bandit.get_rewards());
-        exp3_agent.observe(select_arm, reward);
+        exp3p_agent.observe(select_arm, reward);
         bandit.observe(select_arm);
     }
     println!("reward sum {:.5}, miss prob {:.5}", rew_sum, miss_prob);
