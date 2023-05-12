@@ -18,6 +18,7 @@ impl Exp3Agent {
         self.probs = self.weights.clone().iter().map(
             |&x| (1.0 - self.gamma) * x / w_sum + self.gamma / (self.arm_size as f64)
         ).collect::<Vec<_>>();  // update probabilities
+        self.weights = self.weights.clone().iter().map(|&w| w/w_sum).collect::<Vec<_>>();
         let dist = WeightedIndex::new(&self.probs).unwrap();
         dist.sample(&mut self.rng) as u32
     }
@@ -56,6 +57,7 @@ impl Exp3PAgent {
         self.probs = self.weights.clone().iter().map(
             |&w| (1.0 - self.gamma)*w/sum + self.gamma/(self.arm_size as f64)
         ).collect::<Vec<_>>();
+        self.weights = self.weights.clone().iter().map(|&w| w/sum).collect::<Vec<_>>();
         let dist = WeightedIndex::new(&self.probs).unwrap();
         dist.sample(&mut self.rng) as u32
     }

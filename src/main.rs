@@ -96,12 +96,13 @@ fn best_arm_identification(){
 
 fn adversarial_bandit_problem(){
     let T: u32 = 200;
-    let eta = 0.2;
-    let beta = 0.5;
-    let agent_gamma = 0.9;
+    let eta = 0.95;
+    let beta = 0.9;
+    let agent_gamma = 0.05;
     let bandit_gamma = 0.4;
 
     let mut bandit = build_adversarial_bandit_machine(4, bandit_gamma);
+    let mut exp3_agent = build_exp3agent(bandit.arm_size(), agent_gamma, eta);
     let mut exp3p_agent = build_exp3p_agent(bandit.arm_size(), beta, agent_gamma, eta);
 
     let mut miss_prob: f64 = 0.0;
@@ -119,7 +120,7 @@ fn adversarial_bandit_problem(){
 }
 
 fn main(){
-    prob_bandit();
+    // prob_bandit();
     // best_arm_identification();
-    // adversarial_bandit_problem();
+    adversarial_bandit_problem();
 }
